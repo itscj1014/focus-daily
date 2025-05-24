@@ -199,6 +199,109 @@
       </div>
     </div>
 
+    <!-- 微休息系统增强测试 -->
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+      <h2 class="text-xl font-semibold mb-4">Day 3 微休息系统增强测试</h2>
+      <div class="grid grid-cols-2 gap-6">
+        <!-- 微休息控制 -->
+        <div>
+          <h3 class="font-medium text-gray-700 mb-3">微休息控制</h3>
+          <div class="space-y-2">
+            <button
+              @click="startMicroBreakSession"
+              class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded w-full mb-2"
+              :disabled="loading"
+            >
+              开始15秒微休息
+            </button>
+            <button
+              @click="skipMicroBreak"
+              class="bg-orange-400 hover:bg-orange-500 text-white px-4 py-2 rounded w-full mb-2"
+              :disabled="loading"
+            >
+              跳过微休息 (测试限制)
+            </button>
+            <button
+              @click="triggerMicroBreakPrompt"
+              class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded w-full"
+              :disabled="loading"
+            >
+              模拟微休息提醒
+            </button>
+          </div>
+        </div>
+
+        <!-- 智能调度测试 -->
+        <div>
+          <h3 class="font-medium text-gray-700 mb-3">智能调度测试</h3>
+          <div class="space-y-2">
+            <button
+              @click="simulateSkipBehavior"
+              class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded w-full"
+              :disabled="loading"
+            >
+              模拟跳过行为 (影响调度)
+            </button>
+            <button
+              @click="simulateCompleteBehavior"
+              class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded w-full"
+              :disabled="loading"
+            >
+              模拟完成行为 (影响调度)
+            </button>
+            <button
+              @click="showMicroBreakStats"
+              class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded w-full"
+              :disabled="loading"
+            >
+              显示统计信息
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 微休息状态显示 -->
+      <div v-if="microBreakStats" class="mt-6 p-4 bg-orange-50 rounded-lg">
+        <h4 class="font-medium text-orange-800 mb-3">微休息统计信息</h4>
+        <div class="grid grid-cols-4 gap-4 text-sm">
+          <div class="text-center">
+            <div class="text-lg font-bold text-orange-700">{{ microBreakStats.total_triggered }}</div>
+            <div class="text-orange-600">总触发</div>
+          </div>
+          <div class="text-center">
+            <div class="text-lg font-bold text-green-700">{{ microBreakStats.completed }}</div>
+            <div class="text-green-600">已完成</div>
+          </div>
+          <div class="text-center">
+            <div class="text-lg font-bold text-red-700">{{ microBreakStats.skipped }}</div>
+            <div class="text-red-600">已跳过</div>
+          </div>
+          <div class="text-center">
+            <div class="text-lg font-bold text-blue-700">{{ Math.round(microBreakStats.completion_rate * 100) }}%</div>
+            <div class="text-blue-600">完成率</div>
+          </div>
+        </div>
+        <div class="mt-3 grid grid-cols-3 gap-4 text-sm">
+          <div class="text-center">
+            <div class="text-base font-semibold" :class="getFatigueColor(microBreakStats.fatigue_level)">
+              {{ Math.round(microBreakStats.fatigue_level * 100) }}%
+            </div>
+            <div class="text-gray-600">疲劳度</div>
+          </div>
+          <div class="text-center">
+            <div class="text-base font-semibold text-gray-700">{{ microBreakStats.adjustment_factor.toFixed(2) }}</div>
+            <div class="text-gray-600">调整因子</div>
+          </div>
+          <div class="text-center">
+            <div class="text-base font-semibold text-gray-700">
+              {{ microBreakStats.next_break_at ? `${Math.floor(microBreakStats.next_break_at / 60)}分` : '--' }}
+            </div>
+            <div class="text-gray-600">下次休息</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- 错误和状态显示 -->
     <div v-if="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
       <strong>错误：</strong> {{ error }}
@@ -229,6 +332,7 @@ const timerState = ref<any>(null)
 const cycleState = ref<string>('')
 const eventLog = ref<Array<{time: string, type: string, message: string}>>([])
 const autoRefreshInterval = ref<number | null>(null)
+const microBreakStats = ref<any>(null)
 
 // 工具函数
 function formatTime(seconds: number): string {
@@ -421,6 +525,65 @@ async function quickTest() {
   } catch (err) {
     addEventLog('error', `快速测试失败: ${err}`)
   }
+}
+
+// 微休息系统增强测试
+async function triggerMicroBreakPrompt() {
+  addEventLog('info', '模拟微休息提醒触发')
+  // 模拟微休息提醒 - 实际上会显示微休息弹窗
+  addEventLog('warning', '微休息时间到！请稍作休息')
+}
+
+async function simulateSkipBehavior() {
+  addEventLog('info', '模拟用户跳过微休息行为...')
+  try {
+    // 连续跳过微休息来测试限制和智能调度
+    for (let i = 0; i < 3; i++) {
+      await callTimerCommand('skip_micro_break')
+      addEventLog('warning', `第${i + 1}次跳过微休息`)
+      await new Promise(resolve => setTimeout(resolve, 500))
+    }
+    addEventLog('error', '跳过次数较多，系统将缩短下次间隔')
+  } catch (err) {
+    addEventLog('error', `跳过失败: ${err}`)
+  }
+}
+
+async function simulateCompleteBehavior() {
+  addEventLog('info', '模拟用户完成微休息行为...')
+  try {
+    await startMicroBreakSession()
+    await new Promise(resolve => setTimeout(resolve, 2000))
+    addEventLog('success', '微休息完成，系统将适当延长下次间隔')
+  } catch (err) {
+    addEventLog('error', `完成失败: ${err}`)
+  }
+}
+
+async function showMicroBreakStats() {
+  addEventLog('info', '获取微休息统计信息...')
+  try {
+    // 模拟获取统计数据
+    microBreakStats.value = {
+      total_triggered: 8,
+      completed: 5,
+      skipped: 3,
+      completion_rate: 0.625,
+      fatigue_level: 0.4,
+      adjustment_factor: 0.9,
+      next_break_at: 240
+    }
+    addEventLog('success', '微休息统计信息已更新')
+  } catch (err) {
+    addEventLog('error', `获取统计失败: ${err}`)
+  }
+}
+
+function getFatigueColor(level: number): string {
+  if (level >= 0.7) return 'text-red-600'
+  if (level >= 0.4) return 'text-yellow-600'
+  if (level >= 0.2) return 'text-blue-600'
+  return 'text-green-600'
 }
 
 // 清理资源

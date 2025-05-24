@@ -226,9 +226,48 @@ pub enum TimerEvent {
         count: u32,
         duration: u64,
     },
+    /// 微休息跳过
+    MicroBreakSkipped {
+        count: u32,
+        remaining_skips: u32,
+        skip_limit: u32,
+    },
+    /// 微休息完成
+    MicroBreakCompleted {
+        count: u32,
+        completion_rate: f32,
+    },
+    /// 微休息跳过限制达到
+    MicroBreakSkipLimitReached {
+        skip_limit: u32,
+    },
+    /// 微休息智能调度更新
+    MicroBreakScheduleUpdated {
+        next_break_at: Option<u64>,
+        adjustment_factor: f32,
+        fatigue_level: f32,
+    },
+    /// 微休息统计更新
+    MicroBreakStatsUpdated {
+        total_triggered: u32,
+        completed: u32,
+        skipped: u32,
+        completion_rate: f32,
+    },
     /// 阶段切换
     PhaseChanged {
         from: SessionPhase,
         to: SessionPhase,
+    },
+    /// 用户注意力疲劳警告
+    FatigueWarning {
+        level: f32,
+        recommendation: String,
+    },
+    /// 专注效率反馈
+    EfficiencyFeedback {
+        session_id: String,
+        focus_quality_score: f32,
+        micro_break_effectiveness: f32,
     },
 } 
