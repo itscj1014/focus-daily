@@ -1060,13 +1060,16 @@ checksum = "3f9eec918d3f24069decb9af1554cad7c880e2da24a9afd88aca000531ab82c1"
 name = "focus-daily-app"
 version = "0.1.0"
 dependencies = [
+ "async-trait",
  "chrono",
+ "rand 0.8.5",
  "serde",
  "serde_json",
  "tauri",
  "tauri-build",
  "tauri-plugin-opener",
  "tauri-plugin-sql",
+ "thiserror 1.0.69",
  "tokio",
  "uuid",
 ]
