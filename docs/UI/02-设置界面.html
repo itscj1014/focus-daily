@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focus-Daily - 设置</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .settings-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 0 10px;
+        }
+
+        .back-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #007AFF;
+            transition: all 0.3s ease;
+            margin-right: 20px;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: scale(1.05);
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .settings-section {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 20px 20px 10px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 5px;
+        }
+
+        .section-description {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .setting-item {
+            padding: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.2s ease;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-item:hover {
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        .setting-info {
+            flex: 1;
+        }
+
+        .setting-label {
+            font-size: 16px;
+            font-weight: 500;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .setting-sublabel {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.3;
+        }
+
+        .setting-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .time-input {
+            width: 80px;
+            padding: 8px 12px;
+            border: 2px solid rgba(0, 122, 255, 0.2);
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.8);
+            color: #1a1a1a;
+            transition: all 0.3s ease;
+        }
+
+        .time-input:focus {
+            outline: none;
+            border-color: #007AFF;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+        }
+
+        .time-unit {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 30px;
+            background: #E5E5EA;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: #34C759;
+        }
+
+        .toggle-knob {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 26px;
+            height: 26px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-switch.active .toggle-knob {
+            transform: translateX(20px);
+        }
+
+        .preset-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .preset-btn {
+            padding: 6px 12px;
+            border: 1px solid #E5E5EA;
+            border-radius: 8px;
+            background: white;
+            color: #666;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .preset-btn:hover {
+            background: #F2F2F7;
+        }
+
+        .preset-btn.active {
+            background: #007AFF;
+            color: white;
+            border-color: #007AFF;
+        }
+
+        .divider {
+            height: 1px;
+            background: rgba(0, 0, 0, 0.1);
+            margin: 30px 0;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            padding: 0 10px;
+            margin-top: 30px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 16px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn.primary {
+            background: #007AFF;
+            color: white;
+        }
+
+        .action-btn.primary:hover {
+            background: #0056CC;
+            transform: translateY(-1px);
+        }
+
+        .action-btn.secondary {
+            background: rgba(255, 255, 255, 0.8);
+            color: #007AFF;
+            border: 1px solid rgba(0, 122, 255, 0.3);
+        }
+
+        .action-btn.secondary:hover {
+            background: white;
+            transform: translateY(-1px);
+        }
+
+        .interval-inputs {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .interval-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .interval-input {
+            width: 60px;
+        }
+
+        .interval-separator {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* 音频设置样式 */
+        .audio-setting-item {
+            cursor: pointer;
+            position: relative;
+        }
+
+        .audio-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: rgba(0, 122, 255, 0.1);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .audio-selector:hover {
+            background: rgba(0, 122, 255, 0.15);
+        }
+
+        .current-audio {
+            font-size: 14px;
+            font-weight: 500;
+            color: #007AFF;
+        }
+
+        .audio-arrow {
+            font-size: 14px;
+            color: #007AFF;
+            opacity: 0.7;
+        }
+
+        .audio-options-panel {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(245, 247, 250, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .audio-options-panel.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .audio-options-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .audio-back-btn {
+            background: none;
+            border: none;
+            font-size: 16px;
+            color: #007AFF;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .audio-options-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .audio-list {
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .audio-option-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .audio-option-item:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-1px);
+        }
+
+        .audio-option-item.selected {
+            background: rgba(0, 122, 255, 0.1);
+            border: 1px solid rgba(0, 122, 255, 0.3);
+        }
+
+        .audio-option-item.custom-option {
+            background: rgba(0, 122, 255, 0.05);
+            border: 1px dashed rgba(0, 122, 255, 0.3);
+        }
+
+        .audio-option-item.custom-option:hover {
+            background: rgba(0, 122, 255, 0.1);
+        }
+
+        .audio-info {
+            flex: 1;
+        }
+
+        .audio-name {
+            font-size: 16px;
+            font-weight: 500;
+            color: #1a1a1a;
+        }
+
+        .audio-option-item.custom-option .audio-name {
+            color: #007AFF;
+        }
+
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .audio-play-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(0, 122, 255, 0.1);
+            color: #007AFF;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .audio-play-btn:hover {
+            background: rgba(0, 122, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        .audio-play-btn.playing {
+            background: #007AFF;
+            color: white;
+        }
+
+        .audio-check {
+            font-size: 18px;
+            color: #007AFF;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .audio-option-item.selected .audio-check {
+            opacity: 1;
+        }
+
+        .audio-divider {
+            height: 1px;
+            background: rgba(0, 0, 0, 0.1);
+            margin: 15px 0;
+        }
+
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .volume-icon {
+            font-size: 16px;
+            color: #666;
+        }
+
+        .volume-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            height: 6px;
+            border-radius: 3px;
+            background: #E5E5EA;
+            outline: none;
+            min-width: 120px;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #007AFF;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0, 122, 255, 0.3);
+        }
+
+        .volume-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #007AFF;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 640px) {
+            .settings-container {
+                padding: 10px 0;
+            }
+            
+            .header {
+                margin-bottom: 20px;
+            }
+            
+            .page-title {
+                font-size: 28px;
+            }
+            
+            .setting-item {
+                padding: 16px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            
+            .setting-control {
+                width: 100%;
+                justify-content: flex-end;
+            }
+            
+            .interval-inputs {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            
+            .interval-separator {
+                align-self: center;
+            }
+            
+            .audio-options-header {
+                padding: 15px 20px;
+            }
+            
+            .audio-list {
+                padding: 15px;
+                max-height: calc(100vh - 150px);
+            }
+            
+            .audio-option-item {
+                padding: 12px 15px;
+                margin-bottom: 6px;
+            }
+            
+            .audio-name {
+                font-size: 15px;
+            }
+            
+            .audio-play-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 12px;
+            }
+            
+            .volume-control {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .volume-slider {
+                width: 100%;
+                min-width: unset;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="settings-container">
+        <div class="header">
+            <button class="back-btn">←</button>
+            <h1 class="page-title">设置</h1>
+        </div>
+
+        <div class="settings-section">
+            <div class="section-header">
+                <h2 class="section-title">专注周期</h2>
+                <p class="section-description">自定义您的专注和休息时间</p>
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">专注时长</div>
+                    <div class="setting-sublabel">每个专注周期的时间</div>
+                </div>
+                <div class="setting-control">
+                    <input type="number" class="time-input" value="90" min="1" max="180">
+                    <span class="time-unit">分钟</span>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">长休息时长</div>
+                    <div class="setting-sublabel">专注结束后的休息时间</div>
+                </div>
+                <div class="setting-control">
+                    <input type="number" class="time-input" value="20" min="1" max="60">
+                    <span class="time-unit">分钟</span>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">常用预设</div>
+                    <div class="preset-buttons">
+                        <button class="preset-btn active">90/20分钟</button>
+                        <button class="preset-btn">60/15分钟</button>
+                        <button class="preset-btn">45/10分钟</button>
+                        <button class="preset-btn">自定义</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <div class="section-header">
+                <h2 class="section-title">微休息设置</h2>
+                <p class="section-description">在专注期间的短暂休息提醒</p>
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">启用微休息</div>
+                    <div class="setting-sublabel">在专注期间定期提醒短暂休息</div>
+                </div>
+                <div class="setting-control">
+                    <div class="toggle-switch active">
+                        <div class="toggle-knob"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">休息间隔</div>
+                    <div class="setting-sublabel">每次微休息之间的时间范围</div>
+                </div>
+                <div class="setting-control">
+                    <div class="interval-inputs">
+                        <div class="interval-group">
+                            <input type="number" class="time-input interval-input" value="3" min="1" max="30">
+                            <span class="time-unit">分钟</span>
+                        </div>
+                        <span class="interval-separator">至</span>
+                        <div class="interval-group">
+                            <input type="number" class="time-input interval-input" value="5" min="1" max="30">
+                            <span class="time-unit">分钟</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">微休息时长</div>
+                    <div class="setting-sublabel">每次微休息的持续时间</div>
+                </div>
+                <div class="setting-control">
+                    <input type="number" class="time-input" value="15" min="5" max="60" style="width: 60px;">
+                    <span class="time-unit">秒</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <div class="section-header">
+                <h2 class="section-title">应用行为</h2>
+                <p class="section-description">自定义应用的行为和外观</p>
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">开机自启动</div>
+                    <div class="setting-sublabel">系统启动时自动运行应用</div>
+                </div>
+                <div class="setting-control">
+                    <div class="toggle-switch">
+                        <div class="toggle-knob"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">最小化到托盘</div>
+                    <div class="setting-sublabel">关闭窗口时最小化到系统托盘</div>
+                </div>
+                <div class="setting-control">
+                    <div class="toggle-switch active">
+                        <div class="toggle-knob"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">专注时置顶</div>
+                    <div class="setting-sublabel">专注模式下保持窗口在最前</div>
+                </div>
+                <div class="setting-control">
+                    <div class="toggle-switch">
+                        <div class="toggle-knob"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">深色模式</div>
+                    <div class="setting-sublabel">使用深色主题界面</div>
+                </div>
+                <div class="setting-control">
+                    <div class="toggle-switch">
+                        <div class="toggle-knob"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <div class="section-header">
+                <h2 class="section-title">音频设置</h2>
+                <p class="section-description">为不同场景配置提示音，营造专注氛围</p>
+            </div>
+            
+            <div class="setting-item audio-setting-item" data-audio-type="focus-start">
+                <div class="setting-info">
+                    <div class="setting-label">专注开始</div>
+                    <div class="setting-sublabel">90分钟专注周期开始时的提示音</div>
+                </div>
+                <div class="setting-control">
+                    <div class="audio-selector">
+                        <span class="current-audio">钟声 - 温和</span>
+                        <span class="audio-arrow">></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="audio-options-panel" data-for="focus-start">
+                <div class="audio-options-header">
+                    <button class="audio-back-btn">< 返回</button>
+                    <span class="audio-options-title">专注开始音</span>
+                </div>
+                <div class="audio-list">
+                    <div class="audio-option-item">
+                        <div class="audio-info">
+                            <span class="audio-name">无</span>
+                        </div>
+                        <div class="audio-controls">
+                            <span class="audio-check">✓</span>
+                        </div>
+                    </div>
+                    <div class="audio-option-item selected">
+                        <div class="audio-info">
+                            <span class="audio-name">钟声 - 温和</span>
+                        </div>
+                        <div class="audio-controls">
+                            <button class="audio-play-btn">▶</button>
+                            <span class="audio-check">✓</span>
+                        </div>
+                    </div>
+                    <div class="audio-option-item">
+                        <div class="audio-info">
+                            <span class="audio-name">钟声 - 清脆</span>
+                        </div>
+                        <div class="audio-controls">
+                            <button class="audio-play-btn">▶</button>
+                        </div>
+                    </div>
+                    <div class="audio-option-item">
+                        <div class="audio-info">
+                            <span class="audio-name">水滴声</span>
+                        </div>
+                        <div class="audio-controls">
+                            <button class="audio-play-btn">▶</button>
+                        </div>
+                    </div>
+                    <div class="audio-option-item">
+                        <div class="audio-info">
+                            <span class="audio-name">鸟鸣声</span>
+                        </div>
+                        <div class="audio-controls">
+                            <button class="audio-play-btn">▶</button>
+                        </div>
+                    </div>
+                    <div class="audio-option-item">
+                        <div class="audio-info">
+                            <span class="audio-name">森林之声</span>
+                        </div>
+                        <div class="audio-controls">
+                            <button class="audio-play-btn">▶</button>
+                        </div>
+                    </div>
+                    <div class="audio-divider"></div>
+                    <div class="audio-option-item custom-option">
+                        <div class="audio-info">
+                            <span class="audio-name">📁 添加自定义音频...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="setting-item audio-setting-item" data-audio-type="micro-break-start">
+                <div class="setting-info">
+                    <div class="setting-label">微休息开始</div>
+                    <div class="setting-sublabel">15秒微休息开始时的提示音</div>
+                </div>
+                <div class="setting-control">
+                    <div class="audio-selector">
+                        <span class="current-audio">轻柔提示</span>
+                        <span class="audio-arrow">></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="audio-options-panel" data-for="micro-break-start">
+                <div class="audio-options-header">
+                    <button class="audio-back-btn">< 返回</button>
+                    <span class="audio-options-title">微休息开始音</span>
+                </div>
+                <div class="audio-list">
+                    <div class="audio-option-item">
+                        <div class="audio-info">
+                            <span class="audio-name">无</span>
+                        </div>
+                        <div class="audio-controls">
+                            <span class="audio-check">✓</span>
+                        </div>
+                    </div>
+                    <div class="audio-option-item selected">
+                        <div class="audio-info">
+                            <span class="audio-name">轻柔提示</span>
+                        </div>
+                        <div class="audio-controls">
+                            <button class="audio-play-btn">▶</button>
+                            <span class="audio-check">✓</span>
+                        </div>
+                    </div>
+                    <div class="audio-option-item">
+                        <div class="audio-info">
+                            <span class="audio-name">咖啡杯声</span>
+                        </div>
+                        <div class="audio-controls">
+                            <button class="audio-play-btn">▶</button>
+                        </div>
+                    </div>
+                    <div class="audio-option-item">
+                        <div class="audio-info">
+                            <span class="audio-name">轻松铃声</span>
+                        </div>
+                        <div class="audio-controls">
+                            <button class="audio-play-btn">▶</button>
+                        </div>
+                    </div>
+                    <div class="audio-divider"></div>
+                    <div class="audio-option-item custom-option">
+                        <div class="audio-info">
+                            <span class="audio-name">📁 添加自定义音频...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="setting-item audio-setting-item" data-audio-type="micro-break-end">
+                <div class="setting-info">
+                    <div class="setting-label">微休息结束</div>
+                    <div class="setting-sublabel">15秒微休息结束，继续专注的提示音</div>
+                </div>
+                <div class="setting-control">
+                    <div class="audio-selector">
+                        <span class="current-audio">激励铃声</span>
+                        <span class="audio-arrow">></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="audio-options-panel" data-for="micro-break-end">
+                <div class="audio-options-header">
+                    <button class="audio-back-btn">< 返回</button>
+                    <span class="audio-options-title">微休息结束音</span>
+                </div>
+                <div class="audio-list">
+                    <div class="audio-option-item">
+                        <div class="audio-info">
+                            <span class="audio-name">无</span>
+                        </div>
+                        <div class="audio-controls">
+                            <span class="audio-check">✓</span>
+                        </div>
+                    </div>
+                    <div class="audio-option-item selected">
+                        <div class="audio-info">
+                            <span class="audio-name">激励铃声</span>
+                        </div>
+                        <div class="audio-controls">
+                            <button class="audio-play-btn">▶</button>
+                            <span class="audio-check">✓</span>
+                        </div>
+                    </div>
+                    <div class="audio-option-item">
+                        <div class="audio-info">
+                            <span class="audio-name">能量提示</span>
+                        </div>
+                        <div class="audio-controls">
+                            <button class="audio-play-btn">▶</button>
+                        </div>
+                    </div>
+                    <div class="audio-option-item">
+                        <div class="audio-info">
+                            <span class="audio-name">专注铃</span>
+                        </div>
+                        <div class="audio-controls">
+                            <button class="audio-play-btn">▶</button>
+                        </div>
+                    </div>
+                    <div class="audio-divider"></div>
+                    <div class="audio-option-item custom-option">
+                        <div class="audio-info">
+                            <span class="audio-name">📁 添加自定义音频...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="setting-item audio-setting-item" data-audio-type="focus-end">
+                <div class="setting-info">
+                    <div class="setting-label">专注结束</div>
+                    <div class="setting-sublabel">90分钟专注周期完成的提示音</div>
+                </div>
+                <div class="setting-control">
+                    <div class="audio-selector">
+                        <span class="current-audio">成功音效</span>
+                        <span class="audio-arrow">></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="audio-options-panel" data-for="focus-end">
+                <div class="audio-options-header">
+                    <button class="audio-back-btn">< 返回</button>
+                    <span class="audio-options-title">专注结束音</span>
+                </div>
+                <div class="audio-list">
+                    <div class="audio-option-item">
+                        <div class="audio-info">
+                            <span class="audio-name">无</span>
+                        </div>
+                        <div class="audio-controls">
+                            <span class="audio-check">✓</span>
+                        </div>
+                    </div>
+                    <div class="audio-option-item selected">
+                        <div class="audio-info">
+                            <span class="audio-name">成功音效</span>
+                        </div>
+                        <div class="audio-controls">
+                            <button class="audio-play-btn">▶</button>
+                            <span class="audio-check">✓</span>
+                        </div>
+                    </div>
+                    <div class="audio-option-item">
+                        <div class="audio-info">
+                            <span class="audio-name">胜利之声</span>
+                        </div>
+                        <div class="audio-controls">
+                            <button class="audio-play-btn">▶</button>
+                        </div>
+                    </div>
+                    <div class="audio-option-item">
+                        <div class="audio-info">
+                            <span class="audio-name">完成铃声</span>
+                        </div>
+                        <div class="audio-controls">
+                            <button class="audio-play-btn">▶</button>
+                        </div>
+                    </div>
+                    <div class="audio-divider"></div>
+                    <div class="audio-option-item custom-option">
+                        <div class="audio-info">
+                            <span class="audio-name">📁 添加自定义音频...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="setting-item audio-setting-item" data-audio-type="long-break-end">
+                <div class="setting-info">
+                    <div class="setting-label">长休息结束</div>
+                    <div class="setting-sublabel">20分钟长休息结束，周期完成的提示音</div>
+                </div>
+                <div class="setting-control">
+                    <div class="audio-selector">
+                        <span class="current-audio">庆祝音效</span>
+                        <span class="audio-arrow">></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="audio-options-panel" data-for="long-break-end">
+                <div class="audio-options-header">
+                    <button class="audio-back-btn">< 返回</button>
+                    <span class="audio-options-title">长休息结束音</span>
+                </div>
+                <div class="audio-list">
+                    <div class="audio-option-item">
+                        <div class="audio-info">
+                            <span class="audio-name">无</span>
+                        </div>
+                        <div class="audio-controls">
+                            <span class="audio-check">✓</span>
+                        </div>
+                    </div>
+                    <div class="audio-option-item selected">
+                        <div class="audio-info">
+                            <span class="audio-name">庆祝音效</span>
+                        </div>
+                        <div class="audio-controls">
+                            <button class="audio-play-btn">▶</button>
+                            <span class="audio-check">✓</span>
+                        </div>
+                    </div>
+                    <div class="audio-option-item">
+                        <div class="audio-info">
+                            <span class="audio-name">完成提示</span>
+                        </div>
+                        <div class="audio-controls">
+                            <button class="audio-play-btn">▶</button>
+                        </div>
+                    </div>
+                    <div class="audio-option-item">
+                        <div class="audio-info">
+                            <span class="audio-name">周期结束</span>
+                        </div>
+                        <div class="audio-controls">
+                            <button class="audio-play-btn">▶</button>
+                        </div>
+                    </div>
+                    <div class="audio-divider"></div>
+                    <div class="audio-option-item custom-option">
+                        <div class="audio-info">
+                            <span class="audio-name">📁 添加自定义音频...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">音量</div>
+                    <div class="setting-sublabel">提示音播放音量</div>
+                </div>
+                <div class="setting-control">
+                    <div class="volume-control">
+                        <span class="volume-icon">🔈</span>
+                        <input type="range" class="volume-slider" min="0" max="100" value="75">
+                        <span class="volume-icon">🔊</span>
+                        <span class="volume-value">75%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="action-btn secondary">重置默认</button>
+            <button class="action-btn primary">保存设置</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 切换开关交互
+            const toggleSwitches = document.querySelectorAll('.toggle-switch');
+            toggleSwitches.forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                });
+            });
+
+            // 预设按钮交互
+            const presetButtons = document.querySelectorAll('.preset-btn');
+            presetButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    presetButtons.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // 根据预设更新输入值
+                    const focusInput = document.querySelector('.time-input');
+                    const breakInput = document.querySelectorAll('.time-input')[1];
+                    
+                    switch(this.textContent) {
+                        case '90/20分钟':
+                            focusInput.value = 90;
+                            breakInput.value = 20;
+                            break;
+                        case '60/15分钟':
+                            focusInput.value = 60;
+                            breakInput.value = 15;
+                            break;
+                        case '45/10分钟':
+                            focusInput.value = 45;
+                            breakInput.value = 10;
+                            break;
+                    }
+                });
+            });
+
+            // 间隔输入框验证
+            const intervalInputs = document.querySelectorAll('.interval-input');
+            
+            intervalInputs.forEach((input, index) => {
+                input.addEventListener('input', function() {
+                    const minInput = intervalInputs[0];
+                    const maxInput = intervalInputs[1];
+                    const minValue = parseInt(minInput.value);
+                    const maxValue = parseInt(maxInput.value);
+                    
+                    // 确保最小值不大于最大值
+                    if (index === 0 && minValue >= maxValue) {
+                        maxInput.value = minValue + 1;
+                    } else if (index === 1 && maxValue <= minValue) {
+                        minInput.value = maxValue - 1;
+                    }
+                    
+                    // 设置边框颜色反馈
+                    if (minValue < maxValue) {
+                        minInput.style.borderColor = 'rgba(0, 122, 255, 0.2)';
+                        maxInput.style.borderColor = 'rgba(0, 122, 255, 0.2)';
+                    } else {
+                        minInput.style.borderColor = '#FF3B30';
+                        maxInput.style.borderColor = '#FF3B30';
+                    }
+                });
+                
+                // 失去焦点时的验证
+                input.addEventListener('blur', function() {
+                    const minInput = intervalInputs[0];
+                    const maxInput = intervalInputs[1];
+                    const minValue = parseInt(minInput.value);
+                    const maxValue = parseInt(maxInput.value);
+                    
+                    // 自动修正不合理的值
+                    if (minValue >= maxValue) {
+                        if (index === 0) {
+                            maxInput.value = minValue + 1;
+                        } else {
+                            minInput.value = maxValue - 1;
+                        }
+                    }
+                    
+                    // 恢复正常边框
+                    setTimeout(() => {
+                        minInput.style.borderColor = 'rgba(0, 122, 255, 0.2)';
+                        maxInput.style.borderColor = 'rgba(0, 122, 255, 0.2)';
+                    }, 500);
+                });
+            });
+
+            // 音频设置交互
+            const audioSettingItems = document.querySelectorAll('.audio-setting-item');
+            const audioOptionsPanels = document.querySelectorAll('.audio-options-panel');
+            
+            // 显示音频选择面板
+            audioSettingItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const audioType = this.getAttribute('data-audio-type');
+                    const panel = document.querySelector(`[data-for="${audioType}"]`);
+                    if (panel) {
+                        panel.classList.add('show');
+                        document.body.style.overflow = 'hidden';
+                    }
+                });
+            });
+            
+            // 返回按钮
+            document.querySelectorAll('.audio-back-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const panel = this.closest('.audio-options-panel');
+                    panel.style.animation = 'slideOut 0.3s ease-in forwards';
+                    setTimeout(() => {
+                        panel.classList.remove('show');
+                        panel.style.animation = 'slideIn 0.3s ease-out';
+                        document.body.style.overflow = 'auto';
+                    }, 300);
+                });
+            });
+            
+            // 音频选项选择
+            document.querySelectorAll('.audio-option-item').forEach(item => {
+                if (!item.classList.contains('custom-option')) {
+                    item.addEventListener('click', function() {
+                        const panel = this.closest('.audio-options-panel');
+                        const audioType = panel.getAttribute('data-for');
+                        const audioName = this.querySelector('.audio-name').textContent;
+                        
+                        // 更新选中状态
+                        panel.querySelectorAll('.audio-option-item').forEach(opt => {
+                            opt.classList.remove('selected');
+                        });
+                        this.classList.add('selected');
+                        
+                        // 更新主设置界面显示
+                        const settingItem = document.querySelector(`[data-audio-type="${audioType}"]`);
+                        const currentAudio = settingItem.querySelector('.current-audio');
+                        currentAudio.textContent = audioName;
+                        
+                        // 延迟关闭面板
+                        setTimeout(() => {
+                            panel.style.animation = 'slideOut 0.3s ease-in forwards';
+                            setTimeout(() => {
+                                panel.classList.remove('show');
+                                panel.style.animation = 'slideIn 0.3s ease-out';
+                                document.body.style.overflow = 'auto';
+                            }, 300);
+                        }, 500);
+                    });
+                }
+            });
+            
+            // 播放按钮
+            document.querySelectorAll('.audio-play-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation(); // 防止触发选择事件
+                    
+                    // 停止其他正在播放的音频
+                    document.querySelectorAll('.audio-play-btn').forEach(otherBtn => {
+                        otherBtn.classList.remove('playing');
+                        otherBtn.textContent = '▶';
+                    });
+                    
+                    // 播放当前音频
+                    this.classList.add('playing');
+                    this.textContent = '⏸';
+                    
+                    // 模拟播放2秒后停止
+                    setTimeout(() => {
+                        this.classList.remove('playing');
+                        this.textContent = '▶';
+                    }, 2000);
+                });
+            });
+            
+            // 自定义音频上传
+            document.querySelectorAll('.custom-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = 'audio/*';
+                    input.onchange = function(e) {
+                        const file = e.target.files[0];
+                        if (file) {
+                            // 这里可以添加文件上传逻辑
+                            alert(`已选择音频文件: ${file.name}`);
+                        }
+                    };
+                    input.click();
+                });
+            });
+            
+            // 音量滑块
+            const volumeSlider = document.querySelector('.volume-slider');
+            const volumeValue = document.querySelector('.volume-value');
+            
+            if (volumeSlider && volumeValue) {
+                volumeSlider.addEventListener('input', function() {
+                    volumeValue.textContent = this.value + '%';
+                });
+            }
+            
+            // 添加退出动画
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideOut {
+                    from {
+                        opacity: 1;
+                        transform: translateX(0);
+                    }
+                    to {
+                        opacity: 0;
+                        transform: translateX(100%);
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+
+            // 保存按钮交互
+            document.querySelector('.action-btn.primary').addEventListener('click', function() {
+                // 模拟保存成功
+                this.textContent = '已保存 ✓';
+                this.style.background = '#34C759';
+                
+                setTimeout(() => {
+                    this.textContent = '保存设置';
+                    this.style.background = '#007AFF';
+                }, 2000);
+            });
+
+            // 返回按钮
+            document.querySelector('.back-btn').addEventListener('click', function() {
+                // 这里可以添加返回逻辑
+                console.log('返回主界面');
+            });
+        });
+    </script>
+</body>
+</html> 
